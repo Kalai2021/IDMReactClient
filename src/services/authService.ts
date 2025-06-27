@@ -14,8 +14,9 @@ class AuthService {
   private user: User | null = null;
 
   constructor() {
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
     const config = {
-      authority: 'http://localhost:8090',
+      authority: API_URL,
       client_id: 'react-app',
       redirect_uri: 'http://localhost:3000/callback',
       response_type: 'code',
@@ -26,10 +27,10 @@ class AuthService {
       stateStore: new WebStorageStateStore({ store: window.localStorage }),
       // Disable automatic metadata loading since we have a custom implementation
       metadata: {
-        authorization_endpoint: 'http://localhost:8090/api/v1/auth/pkce/authorize',
-        token_endpoint: 'http://localhost:8090/api/v1/auth/pkce/token',
-        jwks_uri: 'http://localhost:8090/api/v1/auth/pkce/jwks',
-        issuer: 'http://localhost:8090',
+        authorization_endpoint: `${API_URL}/api/v1/auth/pkce/authorize`,
+        token_endpoint: `${API_URL}/api/v1/auth/pkce/token`,
+        jwks_uri: `${API_URL}/api/v1/auth/pkce/jwks`,
+        issuer: API_URL,
         response_types_supported: ['code'],
         subject_types_supported: ['public'],
         id_token_signing_alg_values_supported: ['HS256'],

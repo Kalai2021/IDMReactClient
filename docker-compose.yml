@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  idm-backend:
+    build:
+      context: ../IDMApp-go
+    container_name: idm-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=idmapp
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=password
+      - SERVER_PORT=8080
+      - LOG_LEVEL=info
+    depends_on:
+      - postgres
+    networks:
+      - idm-network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: idm-postgres
+    environment:
+      - POSTGRES_DB=idmapp
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - idm-network
+
+  idm-react-client:
+    build: .
+    container_name: idm-react-client
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://idm-backend:8080
+      - REACT_APP_CALLBACK_URL=http://localhost:3000/callback
+    depends_on:
+      - idm-backend
+    networks:
+      - idm-network
+
+volumes:
+  postgres_data:
+
+networks:
+  idm-network:
+    driver: bridge 

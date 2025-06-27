@@ -1,5 +1,8 @@
 import { SHA256 } from 'crypto-js';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const CALLBACK_URL = process.env.REACT_APP_CALLBACK_URL || 'http://localhost:3000/callback';
+
 export interface AuthUser {
   id: string;
   email: string;
@@ -87,14 +90,14 @@ class CustomAuthService {
       // Build the authorization URL
       const params = new URLSearchParams({
         client_id: 'react-app',
-        redirect_uri: 'http://localhost:3000/callback',
+        redirect_uri: CALLBACK_URL,
         response_type: 'code',
         scope: 'openid profile email',
         state: state!,
         code_challenge: codeChallenge!,
         code_challenge_method: 'S256'
       });
-      const authUrl = `http://localhost:8090/api/v1/auth/pkce/authorize?${params.toString()}`;
+      const authUrl = `${API_URL}/api/v1/auth/pkce/authorize?${params.toString()}`;
       console.log('Redirecting to:', authUrl);
       window.location.href = authUrl;
     } catch (error) {
@@ -159,17 +162,17 @@ class CustomAuthService {
       grant_type: 'authorization_code',
       client_id: 'react-app',
       code: code,
-      redirect_uri: 'http://localhost:3000/callback',
+      redirect_uri: CALLBACK_URL,
       code_verifier: codeVerifier
     });
 
     console.log('Token exchange request:', {
       code,
       code_verifier: codeVerifier,
-      redirect_uri: 'http://localhost:3000/callback'
+      redirect_uri: CALLBACK_URL
     });
 
-    const response = await fetch('http://localhost:8090/api/v1/auth/pkce/token', {
+    const response = await fetch(`${API_URL}/api/v1/auth/pkce/token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -211,7 +214,7 @@ class CustomAuthService {
     sessionStorage.removeItem('pkce_state');
     
     // Redirect to logout endpoint
-    window.location.href = 'http://localhost:8090/logout';
+    window.location.href = `${API_URL}/logout`;
   }
 
   // Remove user data
