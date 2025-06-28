@@ -38,17 +38,60 @@ services:
     build: .
     container_name: idm-react-client
     ports:
-      - "3000:80"
+      - "3000:3000"
     environment:
-      - REACT_APP_API_URL=http://idm-backend:8080
-      - REACT_APP_CALLBACK_URL=http://localhost:3000/callback
+      - REACT_APP_API_URL=http://localhost:8080
+      - REACT_APP_FLUENT_ENDPOINT=http://fluentd:24224
+      - REACT_APP_LOGGING_ENABLED=true
+      - NODE_ENV=development
     depends_on:
-      - idm-backend
+      - fluentd
+    networks:
+      - idm-network
+
+  # Fluentd for log aggregation
+  fluentd:
+    image: fluent/fluentd:v1.16-1
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluentd.conf:/fluentd/etc/fluent.conf
+      - ./fluentd:/var/log/fluentd
+    environment:
+      - FLUENTD_CONF=fluent.conf
+    networks:
+      - idm-network
+
+  # Elasticsearch for log storage and search
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - idm-network
+
+  # Kibana for log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
     networks:
       - idm-network
 
 volumes:
   postgres_data:
+  elasticsearch_data:
 
 networks:
   idm-network:

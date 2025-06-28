@@ -1,0 +1,29 @@
+# Example docker-compose override file for development
+# Copy this file to docker-compose.override.yml to customize the setup
+
+version: '3.8'
+
+services:
+  # Override React app for development
+  idm-react-client:
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+
+  # Override Elasticsearch for development (reduce memory usage)
+  elasticsearch:
+    environment:
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+
+  # Override Fluentd for development (enable debug logging)
+  fluentd:
+    environment:
+      - FLUENTD_CONF=fluent.conf
+      - FLUENTD_OPT=-v 
