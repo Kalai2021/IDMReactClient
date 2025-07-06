@@ -1,0 +1,62 @@
+{
+  "family": "idm-react-client",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "idm-react-client",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/idm-react-client:latest",
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "REACT_APP_API_URL",
+          "value": "https://your-backend-api.com"
+        },
+        {
+          "name": "REACT_APP_CALLBACK_URL",
+          "value": "https://your-domain.com/callback"
+        },
+        {
+          "name": "REACT_APP_FLUENT_ENDPOINT",
+          "value": "http://fluentd:24224"
+        },
+        {
+          "name": "REACT_APP_LOGGING_ENABLED",
+          "value": "true"
+        },
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/idm-react-client",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/ || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      },
+      "essential": true
+    }
+  ]
+} 

@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
   const fetchStats = async () => {
     setStatsLoading(true);
     try {
-      logger.logInfo('Fetching dashboard stats');
+      logger.info('Fetching dashboard stats');
       
       const [users, groups, organizations, roles] = await Promise.all([
         apiService.getUsers().catch(() => []),
@@ -91,12 +91,12 @@ const Dashboard: React.FC = () => {
 
       setStats(newStats);
       
-      logger.logInfo('Dashboard stats updated', {
+      logger.info('Dashboard stats updated', {
         stats: newStats,
         userId: user?.id
       });
     } catch (error) {
-      logger.logError('Error fetching dashboard stats', error instanceof Error ? error : undefined);
+      logger.error('Error fetching dashboard stats', error instanceof Error ? error : undefined);
       // Keep default values if API calls fail
     } finally {
       setStatsLoading(false);
@@ -105,29 +105,29 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      logger.logUserInteraction('logout_clicked', {
+      logger.userAction('logout_clicked', {
         userId: user?.id,
         userEmail: user?.email
       });
       
       await logout();
       
-      logger.logInfo('User logged out successfully', {
+      logger.info('User logged out successfully', {
         userId: user?.id,
         userEmail: user?.email
       });
     } catch (error) {
-      logger.logError('Logout error', error instanceof Error ? error : undefined);
+      logger.error('Logout error', error instanceof Error ? error : undefined);
     }
   };
 
   const handleOperationComplete = () => {
-    logger.logInfo('Management operation completed, refreshing stats');
+    logger.info('Management operation completed, refreshing stats');
     fetchStats(); // Refresh stats after operation
   };
 
   const handleManagementSelect = (managementId: string) => {
-    logger.logUserInteraction('management_section_selected', {
+    logger.userAction('management_section_selected', {
       managementId,
       managementTitle: managementBoxes.find(box => box.id === managementId)?.title,
       userId: user?.id

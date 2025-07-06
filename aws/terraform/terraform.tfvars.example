@@ -1,0 +1,37 @@
+# AWS Configuration
+aws_region = "us-east-1"
+
+# Project Configuration
+project_name = "idm-react-client"
+
+# ECR Repository (replace with your actual ECR repository URL)
+ecr_repository_url = "123456789012.dkr.ecr.us-east-1.amazonaws.com/idm-react-client"
+
+# Backend API URL (replace with your actual backend URL)
+backend_api_url = "https://your-backend-api.com"
+
+# Domain Configuration (optional)
+domain_name = "your-domain.com"
+route53_zone_id = "Z1234567890ABC"
+certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012"
+
+# ECS Configuration
+task_cpu = "512"
+task_memory = "1024"
+service_desired_count = 2
+service_min_count = 1
+service_max_count = 5
+
+# VPC Configuration
+vpc_cidr = "10.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b"]
+private_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
+public_subnet_cidrs = ["10.0.101.0/24", "10.0.102.0/24"]
+
+# Tags
+common_tags = {
+  Environment = "production"
+  Project     = "idm-react-client"
+  ManagedBy   = "terraform"
+  Owner       = "your-team"
+} 

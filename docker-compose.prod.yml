@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  idm-react-client:
+    build: .
+    container_name: idm-react-client-prod
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
+      - REACT_APP_CALLBACK_URL=${REACT_APP_CALLBACK_URL}
+      - REACT_APP_FLUENT_ENDPOINT=http://fluentd:24224
+      - REACT_APP_LOGGING_ENABLED=true
+      - NODE_ENV=production
+    depends_on:
+      - fluentd
+    networks:
+      - idm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Fluentd for log aggregation
+  fluentd:
+    image: fluent/fluentd:v1.16-1
+    container_name: fluentd-prod
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./fluentd.conf:/fluentd/etc/fluent.conf
+      - ./fluentd:/var/log/fluentd
+    environment:
+      - FLUENTD_CONF=fluent.conf
+    networks:
+      - idm-network
+    restart: unless-stopped
+
+  # Elasticsearch for log storage and search
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch-prod
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - cluster.name=idm-cluster
+      - node.name=idm-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - idm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Kibana for log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: kibana-prod
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - SERVER_NAME=kibana
+      - SERVER_HOST=0.0.0.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - idm-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  elasticsearch_data:
+    driver: local
+
+networks:
+  idm-network:
+    driver: bridge 

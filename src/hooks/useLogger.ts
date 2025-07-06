@@ -1,59 +1,63 @@
 import { useCallback, useEffect } from 'react';
-import logger from '../services/logger';
+import logger, { Logger } from '../services/logger';
 
 export const useLogger = (componentName?: string) => {
+  // Create a logger with component context
+  const componentLogger = componentName 
+    ? logger.withAttrs({ component: componentName })
+    : logger;
+
   const logContext: Record<string, any> = {
-    component: componentName,
     timestamp: new Date().toISOString()
   };
 
   // Component lifecycle logging
   const logComponentMount = useCallback(() => {
     if (componentName) {
-      logger.logInfo('Component mounted', {
+      componentLogger.info('Component mounted', {
         ...logContext,
         event: 'component_mount'
       });
     }
-  }, [componentName]);
+  }, [componentName, componentLogger]);
 
   const logComponentUnmount = useCallback(() => {
     if (componentName) {
-      logger.logInfo('Component unmounted', {
+      componentLogger.info('Component unmounted', {
         ...logContext,
         event: 'component_unmount'
       });
     }
-  }, [componentName]);
+  }, [componentName, componentLogger]);
 
   // User interaction logging
   const logUserInteraction = useCallback((action: string, details: Record<string, any> = {}) => {
-    logger.logInfo('User interaction', {
+    componentLogger.info('User interaction', {
       ...logContext,
       event: 'user_interaction',
       action,
       ...details
     });
-  }, []);
+  }, [componentLogger]);
 
   const logFormSubmission = useCallback((formName: string, details: Record<string, any> = {}) => {
-    logger.logInfo('Form submission', {
+    componentLogger.info('Form submission', {
       ...logContext,
       event: 'form_submission',
       formName,
       ...details
     });
-  }, []);
+  }, [componentLogger]);
 
   const logNavigation = useCallback((from: string, to: string, details: Record<string, any> = {}) => {
-    logger.logInfo('Navigation', {
+    componentLogger.info('Navigation', {
       ...logContext,
       event: 'navigation',
       from,
       to,
       ...details
     });
-  }, []);
+  }, [componentLogger]);
 
   // Error logging
   const logError = useCallback((message: string, error?: Error | null, additionalContext?: Record<string, any>) => {
@@ -61,8 +65,8 @@ export const useLogger = (componentName?: string) => {
       ...logContext,
       ...additionalContext
     };
-    logger.logError(message, error || null, errorContext);
-  }, []);
+    componentLogger.error(message, error || null, errorContext);
+  }, [componentLogger]);
 
   // Auto-log component mount/unmount
   useEffect(() => {
@@ -74,10 +78,11 @@ export const useLogger = (componentName?: string) => {
 
   return {
     // Main logger methods
-    logInfo: logger.logInfo.bind(logger),
-    logError,
-    logWarn: logger.logWarn.bind(logger),
-    logDebug: logger.logDebug.bind(logger),
+    info: componentLogger.info.bind(componentLogger),
+    error: logError,
+    warn: componentLogger.warn.bind(componentLogger),
+    debug: componentLogger.debug.bind(componentLogger),
+    userAction: componentLogger.userAction.bind(componentLogger),
     
     // React-specific methods
     logComponentMount,
@@ -87,8 +92,11 @@ export const useLogger = (componentName?: string) => {
     logNavigation,
     
     // Performance and analytics
-    logPageView: logger.pageView.bind(logger),
-    logPerformance: logger.performance.bind(logger),
-    logApiCall: logger.apiCall.bind(logger)
+    logPageView: componentLogger.pageView.bind(componentLogger),
+    logPerformance: componentLogger.performance.bind(componentLogger),
+    logApiCall: componentLogger.apiCall.bind(componentLogger),
+    
+    // Get logger with additional attributes
+    withAttrs: componentLogger.withAttrs.bind(componentLogger)
   };
 }; 

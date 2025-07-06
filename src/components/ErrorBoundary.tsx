@@ -22,8 +22,8 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log the error to Fluentd
-    logger.logError('React Error Boundary caught an error', error, {
+    // Log the error using the new slog-inspired logger
+    logger.error('React Error Boundary caught an error', error, {
       componentStack: errorInfo.componentStack,
       event: 'react_error_boundary'
     });

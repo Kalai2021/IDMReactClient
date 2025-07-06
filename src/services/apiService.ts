@@ -104,388 +104,344 @@ class ApiService {
 
   // User API calls
   async getUsers(): Promise<User[]> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get('/users');
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Users retrieved successfully', {
-        count: response.data?.length || 0,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/users', 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve users', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/users', 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async getUser(id: string): Promise<User> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get(`/users/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('User retrieved successfully', {
-        userId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/users/${id}`, 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve user', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/users/${id}`, 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async createUser(userData: UserCreateRequest): Promise<User> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.post('/users', userData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('User created successfully', {
-        userId: response.data?.id,
-        email: userData.email,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/users', 'POST', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to create user', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/users', 'POST', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async updateUser(id: string, userData: Partial<Omit<User, 'id' | 'created_at' | 'updated_at'>>): Promise<User> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.put(`/users/${id}`, userData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('User updated successfully', {
-        userId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/users/${id}`, 'PUT', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to update user', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/users/${id}`, 'PUT', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async deleteUser(id: string): Promise<void> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.delete(`/users/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('User deleted successfully', {
-        userId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/users/${id}`, 'DELETE', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to delete user', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/users/${id}`, 'DELETE', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   // Group API calls
   async getGroups(): Promise<Group[]> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get('/groups');
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Groups retrieved successfully', {
-        count: response.data?.length || 0,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/groups', 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve groups', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/groups', 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async getGroup(id: string): Promise<Group> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get(`/groups/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Group retrieved successfully', {
-        groupId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/groups/${id}`, 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve group', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/groups/${id}`, 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async createGroup(groupData: GroupCreateRequest): Promise<Group> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.post('/groups', groupData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Group created successfully', {
-        groupId: response.data?.id,
-        groupName: groupData.name,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/groups', 'POST', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to create group', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/groups', 'POST', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async updateGroup(id: string, groupData: Partial<Omit<Group, 'id' | 'created_at' | 'updated_at'>>): Promise<Group> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.put(`/groups/${id}`, groupData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Group updated successfully', {
-        groupId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/groups/${id}`, 'PUT', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to update group', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/groups/${id}`, 'PUT', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async deleteGroup(id: string): Promise<void> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.delete(`/groups/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Group deleted successfully', {
-        groupId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/groups/${id}`, 'DELETE', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to delete group', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/groups/${id}`, 'DELETE', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   // Organization API calls
   async getOrganizations(): Promise<Organization[]> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get('/organizations');
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Organizations retrieved successfully', {
-        count: response.data?.length || 0,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/organizations', 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve organizations', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/organizations', 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async getOrganization(id: string): Promise<Organization> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get(`/organizations/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Organization retrieved successfully', {
-        orgId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/organizations/${id}`, 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve organization', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/organizations/${id}`, 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async createOrganization(orgData: Omit<Organization, 'id' | 'created_at' | 'updated_at'>): Promise<Organization> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.post('/organizations', orgData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Organization created successfully', {
-        orgId: response.data?.id,
-        orgName: orgData.name,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/organizations', 'POST', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to create organization', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/organizations', 'POST', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async updateOrganization(id: string, orgData: Partial<Omit<Organization, 'id' | 'created_at' | 'updated_at'>>): Promise<Organization> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.put(`/organizations/${id}`, orgData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Organization updated successfully', {
-        orgId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/organizations/${id}`, 'PUT', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to update organization', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/organizations/${id}`, 'PUT', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async deleteOrganization(id: string): Promise<void> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.delete(`/organizations/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Organization deleted successfully', {
-        orgId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/organizations/${id}`, 'DELETE', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to delete organization', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/organizations/${id}`, 'DELETE', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   // Role API calls
   async getRoles(): Promise<Role[]> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get('/roles');
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Roles retrieved successfully', {
-        count: response.data?.length || 0,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/roles', 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve roles', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/roles', 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async getRole(id: string): Promise<Role> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.get(`/roles/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Role retrieved successfully', {
-        roleId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/roles/${id}`, 'GET', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to retrieve role', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/roles/${id}`, 'GET', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async createRole(roleData: RoleCreateRequest): Promise<Role> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.post('/roles', roleData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Role created successfully', {
-        roleId: response.data?.id,
-        roleName: roleData.name,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall('/roles', 'POST', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to create role', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall('/roles', 'POST', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async updateRole(id: string, roleData: Partial<Omit<Role, 'id' | 'created_at' | 'updated_at'>>): Promise<Role> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.put(`/roles/${id}`, roleData);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Role updated successfully', {
-        roleId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/roles/${id}`, 'PUT', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to update role', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/roles/${id}`, 'PUT', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }
 
   async deleteRole(id: string): Promise<void> {
+    const startTime = Date.now();
     try {
-      const startTime = Date.now();
       const response = await this.api.delete(`/roles/${id}`);
       const duration = Date.now() - startTime;
       
-      logger.logInfo('Role deleted successfully', {
-        roleId: id,
-        duration,
-        timestamp: new Date().toISOString()
-      });
+      logger.apiCall(`/roles/${id}`, 'DELETE', response.status, duration);
       
       return response.data;
     } catch (error) {
-      logger.logError('Failed to delete role', error instanceof Error ? error : undefined);
+      const duration = Date.now() - startTime;
+      const err: any = error;
+      logger.apiCall(`/roles/${id}`, 'DELETE', err.response?.status || 0, duration, error instanceof Error ? error : undefined);
       throw error;
     }
   }

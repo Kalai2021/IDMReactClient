@@ -108,7 +108,7 @@ All logs follow this structure:
 import logger from '../services/logger';
 
 // Info logging
-await logger.logInfo('User logged in', {
+logger.info('User logged in', {
   userId: 'user123',
   email: 'user@example.com'
 });
@@ -117,7 +117,7 @@ await logger.logInfo('User logged in', {
 try {
   // Some operation
 } catch (error) {
-  await logger.logError('Operation failed', error, {
+  logger.error('Operation failed', error, {
     operation: 'create_user',
     userId: 'user123'
   });
